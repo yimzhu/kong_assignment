@@ -30,22 +30,22 @@ Demo automation test cases for Kong manager
 │   │   └── utils	#utils for drivers or test lib<br>
 │   ├── reports<br>
 │   │   ├── allure-reports<br>
-│   │   └── allure-results
-│   ├── screenshots
-│   ├── selectors
-│   │   └── dropdowns.json
-│   ├── support
-│   │   ├── commands.js
-│   │   ├── e2e.js
-│   │   └── pages	#page objects
-│   │         └── gatewayServicesDetailPage.js
-│   │         └── gatewayServicesDetailRoutePage.js
-│   │         └── gatewayServicesPage.js
-│   └── videos
-├── cypress.config.js
-├── docker-compose.yml
-├── package-lock.json
-└── package.json
+│   │   └── allure-results<br>
+│   ├── screenshots<br>
+│   ├── selectors<br>
+│   │   └── dropdowns.json<br>
+│   ├── support<br>
+│   │   ├── commands.js<br>
+│   │   ├── e2e.js<br>
+│   │   └── pages	#page objects<br>
+│   │         └── gatewayServicesDetailPage.js<br>
+│   │         └── gatewayServicesDetailRoutePage.js<br>
+│   │         └── gatewayServicesPage.js<br>
+│   └── videos<br>
+├── cypress.config.js<br>
+├── docker-compose.yml<br>
+├── package-lock.json<br>
+└── package.json<br>
 
 ---
 
