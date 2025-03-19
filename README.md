@@ -1,8 +1,7 @@
 # Kong's Assignment 🚀
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/project-name.svg)](https://github.com/yimzhu/kong_assignment.git)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/project-name/main.yml)](https://github.com/yimzhu/kong_assignment/actions)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/yimzhu/kong_assignment/cypress.yml?branch=main&label=CI&logo=github)
 
 Demo automation test cases for Kong manager
 
@@ -111,10 +110,11 @@ npm run report
 - The current test coverage for positive gateway service scenarios is insufficient; more granular coverage is needed for edge cases and negative scenarios.
 - Parallel execution is not enabled by default, prioritizing stability over speed.
 - baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
-- .should('be.visible') has been used for Implicit Assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. 
+- Some operation like click() has implicit assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. But it needs more time. 
 
 ### ***E2E Scenarios
 Scenario 1:
+Steps:
 1. go to gateway services "http://localhost:8002/default/services"
 2. click "New Gateway Service"
 3. fill in "Name", "Tags", "Upstream URL"
@@ -128,7 +128,7 @@ Scenario 1:
 Scenario 2:
 Precondition:
 1. historical data exists under gateway services
-
+Steps:
 1. go to gateway services "http://localhost:8002/default/services"
 2. click "New Gateway Service"
 3. fill in "Name", "Tags", "Upstream URL"
