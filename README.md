@@ -112,6 +112,7 @@ npm run report
 - The current test coverage for positive gateway service scenarios is insufficient; more granular coverage is needed for edge cases and negative scenarios.
 - Parallel execution is not enabled by default, prioritizing stability over speed.
 - baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
+- .should('be.visible') has been used for Implicit Assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. 
 
 ### ***E2E Scenarios
 Scenario 1:

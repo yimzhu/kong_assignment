@@ -1,0 +1,11 @@
+# ignore node_modules folder
+node_modules/
+
+# ignore all log files
+*.log
+
+# ignore report, screenshot, videos
+cypress/reports/
+cypress/screenshots/
+cypress/videos/
+
