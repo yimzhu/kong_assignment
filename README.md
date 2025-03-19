@@ -9,9 +9,9 @@ Demo automation test cases for Kong manager
 
 ## Table of Contents 📖
 
-- [Project Structure](#Project Structure)
+- [Project Structure](#project-structure)
 - [Installation](#Installation)
-- [Design Consideration](#Design Consideration)
+- [Design Consideration](#Design-Consideration)
 - [Trade-Offs](#Trade-Offs)
 
 ---
@@ -20,14 +20,14 @@ Demo automation test cases for Kong manager
 
 ├── cypress <br>
 │   ├── downloads<br>
-│   ├── e2e          # end to end test scenarios<br>
+│   ├── e2e                                     # end to end test scenarios<br>
 │   │   ├── createGatewayServiceWData.cy.js<br>
 │   │   └── createGatewayServiceWoData.cy.js<br>
 │   ├── fixtures<br>
 │   │   └── example.json<br>
 │   ├── integration<br>
 │   │   ├── api<br>
-│   │   └── utils	#utils for drivers or test lib<br>
+│   │   └── utils	                             #utils for drivers or test lib<br>
 │   ├── reports<br>
 │   │   ├── allure-reports<br>
 │   │   └── allure-results<br>
@@ -37,7 +37,7 @@ Demo automation test cases for Kong manager
 │   ├── support<br>
 │   │   ├── commands.js<br>
 │   │   ├── e2e.js<br>
-│   │   └── pages	#page objects<br>
+│   │   └── pages	                              #page objects<br>
 │   │         └── gatewayServicesDetailPage.js<br>
 │   │         └── gatewayServicesDetailRoutePage.js<br>
 │   │         └── gatewayServicesPage.js<br>
