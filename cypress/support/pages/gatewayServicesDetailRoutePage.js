@@ -50,7 +50,7 @@ class GatewayServiceDetailRoutePage {
           //TODO
         }
       }
-      cy.get("[data-testid='route-create-form-submit']").should('be.visible').click();
+      cy.get("[data-testid='route-create-form-submit']").click();
       return this
     }
 
@@ -86,12 +86,12 @@ class GatewayServiceDetailRoutePage {
       }
       
       if(rules.pathHandling != undefined){
-          cy.get("[data-testid='route-form-path-handling']").should('be.visible').click();
-          cy.get(`[data-testid='select-item-${rules.pathHandling}'] span`).should('be.visible').click();
+          cy.get("[data-testid='route-form-path-handling']").click();
+          cy.get(`[data-testid='select-item-${rules.pathHandling}'] span`).click();
       }
       if(rules.httpsRedirectStatusCode != undefined){
-          cy.get("[data-testid='route-form-http-redirect-status-code']").should('be.visible').click();
-          cy.get(`[data-testid='select-item-${rules.httpsRedirectStatusCode}'] span`).should('be.visible').click();
+          cy.get("[data-testid='route-form-http-redirect-status-code']").click();
+          cy.get(`[data-testid='select-item-${rules.httpsRedirectStatusCode}'] span`).click();
       }
       if(rules.regexPriority != undefined){
         cy.get("[data-testid='route-form-regex-priority']").should('not.have.value', 'oldvalue').type(regexPriority);
@@ -112,14 +112,14 @@ class GatewayServiceDetailRoutePage {
        * New Gateway Service - Service - Route - Save
        */
       save(){
-        cy.get("[data-testid='route-create-form-submit']").should('be.visible').click();
+        cy.get("[data-testid='route-create-form-submit']").click();
       }
 
       /**
        * New Gateway Service - Service - Route - Cancel
        */
       cancel(){
-        cy.get("[data-testid='route-create-form-cancel']").should('be.visible').click();
+        cy.get("[data-testid='route-create-form-cancel']").click();
       }
   }
   

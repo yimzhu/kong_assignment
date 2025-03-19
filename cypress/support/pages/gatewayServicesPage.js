@@ -37,7 +37,7 @@ class GatewayServicePage {
         cy.log('input gateway service name')
         cy.get("[data-testid='gateway-service-tags-input']").clear().should('not.have.value', 'oldvalue').type(tags);
         cy.log('click gateway service url radio button')
-        cy.get("[data-testid='gateway-service-url-radio']").should('be.visible').click();
+        cy.get("[data-testid='gateway-service-url-radio']").click();
         cy.log('input gateway service url')
         cy.get("[data-testid='gateway-service-url-input']").clear().should('not.have.value', 'oldvalue').type(url, { delay: 100 });
         return this;
@@ -52,8 +52,8 @@ class GatewayServicePage {
      * @returns 
      */
     createNewGatewayByProtocol(protocol, host, path, port){
-        cy.get("[data-testid='toolbar-add-gateway-service']").should('be.visible').click();
-        cy.get("[data-testid='gateway-service-protocol-radio']").should('be.visible').click();
+        cy.get("[data-testid='toolbar-add-gateway-service']").click();
+        cy.get("[data-testid='gateway-service-protocol-radio']").click();
 
         //select a protocol
         // cy.get(dropdownSelectors.protocolDropdown.container).click();
@@ -145,14 +145,14 @@ class GatewayServicePage {
        * New Gateway Service - Save
        */
       save(){
-        cy.get("[data-testid='service-create-form-submit']").should('be.visible').click();
+        cy.get("[data-testid='service-create-form-submit']").click();
       }
 
       /**
        * New Gateway Service - Cancel
        */
       cancel(){
-        cy.get("[data-testid='service-create-form-cancel']").should('be.visible').click();
+        cy.get("[data-testid='service-create-form-cancel']").click();
       }
   }
   
