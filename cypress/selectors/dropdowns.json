@@ -1,0 +1,27 @@
+{
+    "protocolDropdown": {
+      "container": "[data-testid='gateway-service-protocol-select']",
+      "options": {
+        "grpc": "[data-testid='select-item-grpc'] span",
+        "grpcs": "[data-testid='select-item-grpcs'] span",
+        "http": "[data-testid='select-item-http'] span",
+        "https": "[data-testid='select-item-https'] span",
+        "tcp": "[data-testid='select-item-tcp'] span",
+        "tls": "[data-testid='select-item-tls'] span",
+        "tls_passthrough": "[data-testid='select-item-tls_passthrough'] span",
+        "udp": "[data-testid='select-item-udp'] span",
+        "ws": "[data-testid='select-item-ws'] span",
+        "wss": "[data-testid='select-item-wss'] span"
+      }
+    },
+    "routesPageProtocolDropdown": {
+      "container": "[data-testid='gateway-service-protocol-select']",
+      "options": {
+        "grpc": "[data-testid='select-item-grpc'] span",
+        "grpcs": "[data-testid='select-item-grpcs'] span",
+        "http": "[data-testid='select-item-http'] span",
+        "https": "[data-testid='select-item-https'] span",
+        "grpc,grpcs": "[data-testid='select-item-grpc\\,grpcs'] span"
+      }
+    }
+}
