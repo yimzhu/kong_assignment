@@ -1,9 +1,8 @@
 # Kong's Assignment 🚀
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/project-name.svg)](https://github.com/yourusername/project-name/stargazers)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/project-name/main.yml)](https://github.com/yourusername/project-name/actions)
-[![Code Coverage](https://img.shields.io/codecov/c/github/yourusername/project-name)](https://codecov.io/gh/yourusername/project-name)
+[![GitHub Stars](https://img.shields.io/github/stars/yourusername/project-name.svg)](https://github.com/yimzhu/kong_assignment.git)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/project-name/main.yml)](https://github.com/yimzhu/kong_assignment/actions)
 
 Demo automation test cases for Kong manager
 
