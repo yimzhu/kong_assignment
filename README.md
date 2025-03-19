@@ -13,6 +13,7 @@ Demo automation test cases for Kong manager
 - [Installation](#Installation)
 - [Design Consideration](#Design-Consideration)
 - [Trade-Offs](#Trade-Offs)
+- [E2E Scenarios](#E2E-Scenarios)
 
 ---
 
@@ -67,33 +68,33 @@ Demo automation test cases for Kong manager
 
 2. Execute all test cases && view the report:
 
-```bash
-npm run cy:e2e:run
-```
+   ```bash
+   npm run cy:e2e:run
+   ```
 
 3. Execute all test cases only by headless mode
 
-```bash
-npm run cy:run
-```
+   ```bash
+   npm run cy:run
+   ```
 
 4. Execute all test cases only by UI mode
 
-```bash
-npm run cy:open
-```
+   ```bash
+   npm run cy:open
+   ```
 
 5. Clear test results
 
-```bash
-npm run clear
-```
+   ```bash
+   npm run clear
+   ```
 
 6. Generate report
 
-```bash
-npm run report
-```
+   ```bash
+   npm run report
+   ```
 
 ### **Design Considerations**
 
@@ -112,7 +113,7 @@ npm run report
 - baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
 - Some operation like click() has implicit assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. But it needs more time. 
 
-### ***E2E Scenarios
+### **E2E Scenarios**
 Scenario 1:
 Steps:
 1. go to gateway services "http://localhost:8002/default/services"
