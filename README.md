@@ -18,18 +18,18 @@ Demo automation test cases for Kong manager
 
 ## Project Structure ✨
 
-├── cypress 
-│   ├── downloads
-│   ├── e2e          # end to end test scenarios
-│   │   ├── createGatewayServiceWData.cy.js
-│   │   └── createGatewayServiceWoData.cy.js
-│   ├── fixtures
-│   │   └── example.json
-│   ├── integration
-│   │   ├── api
-│   │   └── utils	#utils for drivers or test lib
-│   ├── reports
-│   │   ├── allure-reports
+├── cypress <br>
+│   ├── downloads<br>
+│   ├── e2e          # end to end test scenarios<br>
+│   │   ├── createGatewayServiceWData.cy.js<br>
+│   │   └── createGatewayServiceWoData.cy.js<br>
+│   ├── fixtures<br>
+│   │   └── example.json<br>
+│   ├── integration<br>
+│   │   ├── api<br>
+│   │   └── utils	#utils for drivers or test lib<br>
+│   ├── reports<br>
+│   │   ├── allure-reports<br>
 │   │   └── allure-results
 │   ├── screenshots
 │   ├── selectors
