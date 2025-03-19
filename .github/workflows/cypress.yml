@@ -3,14 +3,14 @@ name: Cypress Tests
 on: 
   push:
     branches: 
-      - main  # 当 push 到 main 分支时触发
+      - main
   pull_request:
     branches:
-      - main  # 当有 PR 进 main 分支时触发
+      - main
 
 jobs:
   cypress-run:
-    runs-on: ubuntu-latest  # 运行环境（可改为 macos-latest / windows-latest）
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -19,17 +19,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # 指定 Node.js 版本，可改为 16 或 20
+          node-version: '22.11.0'
 
       - name: Install dependencies
-        run: npm install  # 或 `yarn install`
+        run: npm ci 
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          browser: chrome  # 可改为 firefox / edge
-          headless: true    # 以无头模式运行（不打开 UI）
-          record: false     # 是否记录测试结果（需配合 Cypress Dashboard）
+          browser: chrome  # Or firefox
+          headed: true    # Set to `true` if you want to run tests with UI
+          record: false    # Set to true to record tests with Cypress Dashboard
 
       - name: Upload Cypress screenshots on failure
         if: failure()
