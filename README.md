@@ -56,6 +56,7 @@ Demo automation test cases for Kong manager
 
 - Node.js (>=22.11)
 - Docker (>=28.0.1)
+- Kong image (=3.9) : The application under test
 
 ### Steps
 
@@ -72,25 +73,25 @@ Demo automation test cases for Kong manager
    npm run cy:e2e:run
    ```
 
-3. Execute all test cases only by headless mode
+  Or execute all test cases only by headless mode
 
    ```bash
    npm run cy:run
    ```
 
-4. Execute all test cases only by UI mode
+  Or execute all test cases only by UI mode
 
    ```bash
    npm run cy:open
    ```
 
-5. Clear test results
+  Or clear test results
 
    ```bash
    npm run clear
    ```
 
-6. Generate report
+  Or generate report
 
    ```bash
    npm run report
@@ -112,6 +113,7 @@ Demo automation test cases for Kong manager
 - Parallel execution is not enabled by default, prioritizing stability over speed.
 - baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
 - Some operation like click() has implicit assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. But it needs more time. 
+- As Kong is 
 
 ### **E2E Scenarios**
 Scenario 1:
