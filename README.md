@@ -104,7 +104,6 @@ Demo automation test cases for Kong manager
 - Common functions are defined under Cypress commands to keep test cases concise.
 
 ### **Trade-Offs**
-
 - The reporting feature is relatively simple. Allure provides more powerful reporting and easier configuration in TypeScript, but it is more complex in JavaScript. Therefore, Mochawesome was chosen as a compromise.
 - Some page operation methods can be further abstracted. For example, when adding a route based on a specific gateway, the gateway can be passed as a parameter, and scenarios can be distinguished using different methods. This requires further refinement of user behavior.
 - UI elements should be extracted into a JSON file for centralized maintenance.
@@ -113,27 +112,26 @@ Demo automation test cases for Kong manager
 - Parallel execution is not enabled by default, prioritizing stability over speed.
 - baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
 - Some operation like click() has implicit assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. But it needs more time. 
-- As Kong is 
 
 ### **E2E Scenarios**
-Scenario 1:
-Steps:
-1. go to gateway services "http://localhost:8002/default/services"
-2. click "New Gateway Service"
-3. fill in "Name", "Tags", "Upstream URL"
-4. expand "View Advanced Fields", then fill in "Retries", "Connection Timeout"
-5. click 'Save'
-6. add a route under the gateway service by clicking 'add a route'
-7. fill in "Name", "Tags", and leave "Protocol" as default value "HTTP, HTTPS"
-8. fill in "Paths"
-9. click "Save"
+Scenario 1:<br>
+Steps:<br>
+1. go to gateway services "http://localhost:8002/default/services"<br>
+2. click "New Gateway Service"<br>
+3. fill in "Name", "Tags", "Upstream URL"<br>
+4. expand "View Advanced Fields", then fill in "Retries", "Connection Timeout"<br>
+5. click 'Save'<br>
+6. add a route under the gateway service by clicking 'add a route'<br>
+7. fill in "Name", "Tags", and leave "Protocol" as default value "HTTP, HTTPS"<br>
+8. fill in "Paths"<br>
+9. click "Save"<br>
 
-Scenario 2:
-Precondition:
-1. historical data exists under gateway services
-Steps:
-1. go to gateway services "http://localhost:8002/default/services"
-2. click "New Gateway Service"
-3. fill in "Name", "Tags", "Upstream URL"
-4. expand "View Advanced Fields", then fill in "Retries", "Connection Timeout"
-5. click 'Save'
+Scenario 2:<br>
+Precondition:<br>
+1. historical data exists under gateway services<br>
+Steps:<br>
+1. go to gateway services "http://localhost:8002/default/services"<br>
+2. click "New Gateway Service"<br>
+3. fill in "Name", "Tags", "Upstream URL"<br>
+4. expand "View Advanced Fields", then fill in "Retries", "Connection Timeout"<br>
+5. click 'Save'<br>
