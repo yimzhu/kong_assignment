@@ -25,24 +25,18 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 import 'cypress-wait-until';
+import 'cypress-dotenv';
+import "cypress-image-diff-js/dist/command";
 
-  //delete service by id
-  Cypress.Commands.add('deleteService', (uuid) => {
-    const url = `/default/services/${uuid}`;
-  
-    return cy.request({
-      method: 'DELETE',
-      url,
-      headers: {
-      },
-      failOnStatusCode: false, // allow deletion failed without throwing an error
-    }).then((response) => {
-      if (response.status !== 200 && response.status !== 204) {
-        cy.log(`Failed to delete service ${uuid}: ${response.status}`);
-      }
-      return response;
-    });
-  });
+// cypress/support/commands.js
+const compareSnapshotCommand = require('cypress-image-diff-js/dist/command');
+compareSnapshotCommand();
+const gatewayServiceUrl = (Cypress.env('DEV_API_URL') || 'http://localhost:8001')+'/default/services';
+const routeServiceUrl = (Cypress.env('DEV_API_URL') || 'http://localhost:8001')+'/default/routes';
+const queryParams = {
+  sort_desc: 1,
+  size: 30,
+};
 
 //Safe get elements to avoid exception
 Cypress.Commands.add('safeGet', (selector) => {
@@ -82,7 +76,7 @@ Cypress.Commands.add('setCheckboxState', (selector, shouldBeChecked) => {
  */
 Cypress.Commands.overwrite("log", function(log, ...args) {
   if (Cypress.browser.isHeadless) {
-    return cy.task("log", args, { log: false }).then(() => {
+    return cy.task("log", args, { log: true }).then(() => {
       return log(...args);
     });
   } else {
@@ -94,14 +88,14 @@ Cypress.Commands.overwrite("log", function(log, ...args) {
 /**
  * wait for service ready
  */
-Cypress.Commands.add('waitForService', (url, maxAttempts = 12, interval = 5000) => {
+Cypress.Commands.add('waitForService', (serviceUrl, maxAttempts = 12, interval = 5000) => {
   const poll = (attempt = 0) => {
     if (attempt >= maxAttempts) {
       throw new Error(`Service failed to be ready in ${maxAttempts * interval / 1000} seconds`);
     }
     cy.wait(15000, { log: false });
     cy.request({ 
-      url,
+      url: serviceUrl,
       failOnStatusCode: false,
       retryOnNetworkFailure: true, 
       timeout: 100000,             
@@ -109,7 +103,7 @@ Cypress.Commands.add('waitForService', (url, maxAttempts = 12, interval = 5000) 
       .then(({ status }) => {
         if (status === 200) return;
 
-        cy.log(`Waiting for [${url}] Ready!（Trying ${attempt + 1}/${maxAttempts}）`);
+        cy.log(`Waiting for [${serviceUrl}] Ready!（Trying ${attempt + 1}/${maxAttempts}）`);
         cy.wait(interval, { log: false })
           .then(() => poll(attempt + 1));
       });
@@ -121,80 +115,116 @@ Cypress.Commands.add('waitForService', (url, maxAttempts = 12, interval = 5000) 
 /**
  * clear test data
  */
-Cypress.Commands.add('clearData', ()=>{
-  cy.log('Cleaning up routes...');
-      const params = {
-        sort_desc: 1,
-        size: 30,
-      };
-    
-      const routeUrl = 'http://localhost:8001/default/routes';
-      cy.request({
-        method: 'GET',
-        url: routeUrl,
-        qs: params, 
-        headers: {},
-      }).then((response) => {
-        expect(response.status).to.eq(200);
-        cy.log('API Response:', JSON.stringify(response.body, null, 2));
-        // assertion
-        expect(response.body).to.have.property('data');
-        expect(response.body.data).to.be.an('array');
-        // get route ids
-        const routeIds = response.body.data.map((item) => item.id);
-        cy.log('Route IDs:', routeIds);
-        for(let uuid of routeIds){
-          cy.request({
-            method: 'DELETE',
-            url: `${routeUrl}/${uuid}`,
-            headers: {
-            },
-            failOnStatusCode: false, // keep slience if failed
-          }).then((response) => {
-            if (response.status !== 200 && response.status !== 204) {
-              cy.log(`Failed to delete routes ${uuid}: ${response.status}`);
-            }
-          });
-        }
-      });
+Cypress.Commands.add('clearTestData', ()=>{
+  cy.log('Cleaning up services...');
+    return cy.deleteRouteIds().then(()=>{
+      return cy.deleteGatewayIds()
+      })
+  })
 
-      cy.log('Cleaning up services...');
-      const serviceUrl = 'http://localhost:8001/default/services';
+Cypress.Commands.add('fetchGatewayIds', ()=>{
+  // const params = {
+  //   sort_desc: 1,
+  //   size: 30,
+  // };
+  cy.request({
+    method: 'GET',
+    url: gatewayServiceUrl,
+    qs: queryParams, 
+    headers: {},
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    cy.log('API Response:', JSON.stringify(response.body, null, 2));
+    // assertion
+    expect(response.body).to.have.property('data');
+    expect(response.body.data).to.be.an('array');
+    // get service ids
+    const serviceIds = response.body.data.map((item) => item.id);
+    cy.log('Service IDs:', serviceIds);
+    return cy.wrap(serviceIds);
+  });
+})
+
+Cypress.Commands.add('deleteGatewayIds', ()=>{
+  cy.fetchGatewayIds().then((serviceIds)=>{
+    for(let uuid of serviceIds){
       cy.request({
-        method: 'GET',
-        url: serviceUrl,
-        qs: params, 
-        headers: {},
+        method: 'DELETE',
+        url: `${gatewayServiceUrl}/${uuid}`,
+        headers: {
+        },
+        failOnStatusCode: false, // keep slience if failed
       }).then((response) => {
-        expect(response.status).to.eq(200);
-        cy.log('API Response:', JSON.stringify(response.body, null, 2));
-        // assertion
-        expect(response.body).to.have.property('data');
-        expect(response.body.data).to.be.an('array');
-        // get service ids
-        const serviceIds = response.body.data.map((item) => item.id);
-        cy.log('Service IDs:', serviceIds);
-        for(let uuid of serviceIds){
-          cy.request({
-            method: 'DELETE',
-            url: `${serviceUrl}/${uuid}`,
-            headers: {
-            },
-            failOnStatusCode: false, // keep slience if failed
-          }).then((response) => {
-            if (response.status !== 200 && response.status !== 204) {
-              cy.log(`Failed to delete service ${uuid}: ${response.status}`);
-            }
-          });
+        if (response.status !== 200 && response.status !== 204) {
+          cy.log(`Failed to delete service ${uuid}: ${response.status}`);
         }
       });
+    }
+  })
 });
+
+//delete service by id
+Cypress.Commands.add('deleteGatewayById', (uuid) => {
+  const url = `/default/services/${uuid}`;
+  return cy.request({
+    method: 'DELETE',
+    url,
+    headers: {
+    },
+    failOnStatusCode: false, // allow deletion failed without throwing an error
+  }).then((response) => {
+    if (response.status !== 200 && response.status !== 204) {
+      cy.log(`Failed to delete service ${uuid}: ${response.status}`);
+    }
+    return response;
+  });
+});
+
+Cypress.Commands.add('fetchRouteIds', ()=>{
+  cy.request({
+    method: 'GET',
+    url: routeServiceUrl,
+    // url: `http://localhost:8001/default/routes`,
+    qs: queryParams, 
+    headers: {},
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    cy.log('API Response:', JSON.stringify(response.body, null, 2));
+    // assertion
+    expect(response.body).to.have.property('data');
+    expect(response.body.data).to.be.an('array');
+    // get route ids
+    const routeIds = response.body.data.map((item) => item.id);
+    cy.log('Route IDs:', routeIds);
+    return cy.wrap(routeIds);
+  });
+})
+
+Cypress.Commands.add('deleteRouteIds', ()=>{
+  cy.log('Cleaning up routes...');
+  return cy.fetchRouteIds().then((routeIds)=>{
+    for(let uuid of routeIds){
+      cy.request({
+        method: 'DELETE',
+        // url: `http://localhost:8001/default/routes/${uuid}`,
+        url: `${routeServiceUrl}/${uuid}`,
+        headers: {
+        },
+        failOnStatusCode: false, // keep slience if failed
+      }).then((response) => {
+        if (response.status !== 200 && response.status !== 204) {
+          cy.log(`Failed to delete routes ${uuid}: ${response.status}`);
+        }
+      });
+    }
+  })
+})
 
 /**
  * start docker
  */
 Cypress.Commands.add('startEnv', ()=>{
-  cy.exec("docker-compose up -d", { timeout: 180000 }).then(() => cy.waitForService("http://localhost:8002/default/services"));
+  cy.exec("docker-compose up -d", { timeout: 180000 }).then(() => cy.waitForService(Cypress.env('DEV_URL')+"/default/services"));
 });
 
 /**

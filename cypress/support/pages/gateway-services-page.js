@@ -1,4 +1,6 @@
 import dropdownSelectors from '../../selectors/dropdowns.json';
+import gatewayServicesPageSelectors from '../../selectors/gateway-service-page-selectors.json';
+import 'cypress-dotenv';
 
 class GatewayServicePage {
     constructor() {
@@ -11,8 +13,16 @@ class GatewayServicePage {
      * @returns 
      */
     visit() {
-        cy.visit("http://localhost:8002/default/services");
-        return this;
+      cy.log("Navigate to: "+Cypress.env('DEV_URL')+"/default/services");
+      cy.visit(Cypress.env('DEV_URL')+"/default/services");
+      // Wait for the page fully loaded
+      cy.window().should('have.property', 'document');
+      // Hide the element to exclude it from the snapshot
+      cy.get("header span > span").invoke("css", "visibility", "hidden");
+      cy.get("footer > a").invoke("css", "visibility", "hidden");
+      cy.get("div.navbar-content-right > a path").invoke("css", "visibility", "hidden");
+      cy.get("div.popover-trigger-wrapper a").invoke("css", "visibility", "hidden");
+      return this;
     }
 
     /**
@@ -25,21 +35,21 @@ class GatewayServicePage {
     createNewGatewayByFullUrl(name, tags, url, dataExists) {
       if(dataExists==true){
         cy.log('click add gateway service button')
-        cy.get("[data-testid='toolbar-add-gateway-service']").should('exist').click();
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.addGatewayButton).should('exist').click();
       }else if(dataExists==false){
         cy.log('click add gateway service button')
-        cy.get("[data-testid='empty-state-action']").should('exist').click();
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.addGatewayButtonAtEmptyAction).should('exist').click();
       }else{
         throw new Error('dataExists parameter is missing')
       }
         cy.log('input gateway service name')
-        cy.get("[data-testid='gateway-service-name-input']").clear().should('not.have.value', 'oldvalue').type(name);
-        cy.log('input gateway service name')
-        cy.get("[data-testid='gateway-service-tags-input']").clear().should('not.have.value', 'oldvalue').type(tags);
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceName).clear().should('not.have.value', 'oldvalue').type(name);
+        cy.log('input gateway service tags')
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceTags).clear().should('not.have.value', 'oldvalue').type(tags);
         cy.log('click gateway service url radio button')
-        cy.get("[data-testid='gateway-service-url-radio']").click();
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceUrlRadioBtn).click();
         cy.log('input gateway service url')
-        cy.get("[data-testid='gateway-service-url-input']").clear().should('not.have.value', 'oldvalue').type(url, { delay: 100 });
+        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceUrlInput).clear().should('not.have.value', 'oldvalue').type(url, { delay: 100 });
         return this;
     }
     
@@ -139,6 +149,20 @@ class GatewayServicePage {
             cy.get(selector).click();
         }
         return this;
+      }
+
+      /**
+       * enter specific gateway
+       * @param {*} name 
+       */
+      filter(name){
+        //if gateway exists 
+        cy.get("[data-testid='filter-button']").click();
+        cy.get("[data-testid='name'] > span").click();
+        cy.get("#filter-name").click();
+        cy.get("#filter-name").type(name);
+        cy.get("[data-testid='name'] [data-testid='apply-filter']").click();
+        cy.get("section > div > div > div > div > div:nth-of-type(2) [data-testid='name']").click();
       }
 
       /**

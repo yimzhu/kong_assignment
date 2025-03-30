@@ -1,4 +1,6 @@
 const { defineConfig } = require("cypress");
+const getCompareSnapshotsPlugin = require('cypress-image-diff-js/dist/plugin');
+
 // const allureWriter = require("@shelex/cypress-allure-plugin/writer");
 
 module.exports = defineConfig({
@@ -10,6 +12,7 @@ module.exports = defineConfig({
     json: true,
   },
   e2e: {
+    // baseUrl: "http://localhost:8002",
     // default timeout 40 s:ml-citation{ref="6" data="citationList"}
     defaultCommandTimeout: 40000,  
     retries: {
@@ -24,6 +27,11 @@ module.exports = defineConfig({
     failOnStatusCode: false,
     chromeWebSecurity: false,
     setupNodeEvents(on, config) {
+      // visualRegression(on, config, {
+      //   failureThreshold: 0,
+      //   screenshotPath: './cypress/screenshots'
+      // });
+      getCompareSnapshotsPlugin(on, config);
       on("task", {
         log(args) {
           console.log(...args);
@@ -33,12 +41,16 @@ module.exports = defineConfig({
       // allureWriter(on, config);  // 注册 Allure 插件
       return config;
     },
-    // env: {
-      // allureResultsPath: "cypress/reports/allure-results",
-      // allureAttachRequests: true,
-      // allure: true,
-      // allureLogCypress: true,
-      // allureAttachRequests: true,
-    // },
+    env: {
+      START_DOCKER: true,
+      DEV_URL: "http://localhost:8002",
+      DEV_API_URL: "http://localhost:8001",
+      "cypress-image-diff": {
+        "baseDir": "cypress/custom_snapshots/base",   // Baseline 存储路径
+        "diffDir": "cypress/custom_snapshots/diff",    // Diff 存储路径
+        "failureThreshold": 0.01, 
+        "failureThresholdType": "percent" // Use percentage (default: "pixel")
+      }
+    }
   },
 });

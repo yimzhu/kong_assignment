@@ -1,0 +1,15 @@
+{
+    "gatewayServicePage":{
+        "addGatewayButton":"[data-testid='toolbar-add-gateway-service'",
+        "addGatewayButtonAtEmptyAction":"[data-testid='empty-state-action']",
+        "gatewayServiceName":"[data-testid='gateway-service-name-input']",
+        "gatewayServiceTags":"[data-testid='gateway-service-tags-input']",
+        "gatewayServiceUrlRadioBtn":"[data-testid='gateway-service-url-radio']",
+        "gatewayServiceUrlInput":"[data-testid='gateway-service-url-input']"
+    },
+    "gatewayServiceDetailPage":{
+
+    }
+
+
+}

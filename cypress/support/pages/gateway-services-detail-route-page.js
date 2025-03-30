@@ -8,7 +8,7 @@ class GatewayServiceDetailRoutePage {
      * @returns 
      */
     visit(uuid) {
-        cy.visit(`http://localhost:8002/default/services/${uuid}`);
+        cy.visit(Cypress.env('DEV_URL')+`http://localhost:8002/default/services/${uuid}/routes`);
         return this;
     }
 
