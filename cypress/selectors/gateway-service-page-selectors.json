@@ -1,15 +1,77 @@
 {
-    "gatewayServicePage":{
-        "addGatewayButton":"[data-testid='toolbar-add-gateway-service'",
-        "addGatewayButtonAtEmptyAction":"[data-testid='empty-state-action']",
-        "gatewayServiceName":"[data-testid='gateway-service-name-input']",
-        "gatewayServiceTags":"[data-testid='gateway-service-tags-input']",
-        "gatewayServiceUrlRadioBtn":"[data-testid='gateway-service-url-radio']",
-        "gatewayServiceUrlInput":"[data-testid='gateway-service-url-input']"
-    },
-    "gatewayServiceDetailPage":{
+  "headerSpan":"span > span",
+  "footer":"footer > a",
+  "navbar":"div.navbar-content-right > a path",
+  "popover":"[data-testid='dropdown-trigger']",
+  "lastUpdated":"div.last-updated",
+  "copyText":"div.copy-text",
 
+  "addGatewayBtn":"[data-testid='toolbar-add-gateway-service'",
+  "addGatewayBtnAtEmptyAction":"[data-testid='empty-state-action']",
+  "urlRadioBtn":"[data-testid='gateway-service-url-radio']",
+  "gatewayName":"[data-testid='gateway-service-name-input']",
+  "gatewayTags":"[data-testid='gateway-service-tags-input']",
+  "gatewayUrlRadioBtn":"[data-testid='gateway-service-url-radio']",
+  "gatewayUrlInput":"[data-testid='gateway-service-url-input']",
+  "viewAdvancedFields": "[data-testid='collapse-trigger-label']",
+  "retries":"[data-testid='gateway-service-retries-input']",
+  "connTimeout":"[data-testid='gateway-service-connTimeout-input']",
+  "writeTimeout":"[data-testid='gateway-service-writeTimeout-input']",
+  "readTimeout":"[data-testid='gateway-service-readTimeout-input']",
+  "clientCertId":"[data-testid='gateway-service-clientCert-input']",
+  "tlsTrue":"[data-testid='gateway-service-tls-verify-true-option']",
+  "tlsFalse":"[data-testid='gateway-service-tls-verify-false-option']",
+  "certArray":"[data-testid='gateway-service-ca-certs-input']",
+  "filterBtn":"[data-testid='filter-button']",
+
+  "expandName":"[data-testid='name'] > span",
+  "filterName":"#filter-name",
+  "applyName":"[data-testid='name'] [data-testid='apply-filter']",
+  "clearName":"[data-testid='name'] [data-testid='clear-filter']",
+
+  "expandEnabled":"[data-testid='enabled'] > span",
+  "filterEnabled":{
+    "select":"[data-testid='enabled'] [data-testid='select-input']",
+    "options":{
+      "true":"[data-testid='select-item-true'] span",
+      "false":"[data-testid='select-item-false'] span"
     }
+  },
+  "applyEnabled":"[data-testid='enabled'] [data-testid='apply-filter']",
+  "clearEnabled":"[data-testid='enabled'] [data-testid='clear-filter']",
 
+  "expandProtocol":"[data-testid='protocol'] > span",
+  "filterProtocol":{
+    "select":"[data-testid='protocol'] [data-testid='select-input']",
+    "option":{
+      "wss":"[data-testid='select-item-wss'] span"
+    }
+  },
+  "applyProtocol":"[data-testid='protocol'] [data-testid='apply-filter']",
+  "clearProtocol":"[data-testid='protocol'] [data-testid='clear-filter']",
 
+  "clickOneItem":"[data-testid='",
+  "clearAllFilters": "div.filter-clear-button-container > button",
+  "protocolRadioBtn": "[data-testid='gateway-service-protocol-radio']",
+  "protocolDropdown": {
+      "select": "[data-testid='gateway-service-protocol-select']",
+      "options": {
+        "grpc": "[data-testid='select-item-grpc'] span",
+        "grpcs": "[data-testid='select-item-grpcs'] span",
+        "http": "[data-testid='select-item-http'] span",
+        "https": "[data-testid='select-item-https'] span",
+        "tcp": "[data-testid='select-item-tcp'] span",
+        "tls": "[data-testid='select-item-tls'] span",
+        "tls_passthrough": "[data-testid='select-item-tls_passthrough'] span",
+        "udp": "[data-testid='select-item-udp'] span",
+        "ws": "[data-testid='select-item-ws'] span",
+        "wss": "[data-testid='select-item-wss'] span"
+      }
+    },
+  "protocolHost":"[data-testid='gateway-service-host-input']",
+  "protocolPort":"[data-testid='gateway-service-port-input']",
+  "protocolPath":"[data-testid='gateway-service-path-input']",
+
+  "save":"[data-testid='service-create-form-submit']",
+  "cancel":"[data-testid='service-create-form-cancel']"
 }

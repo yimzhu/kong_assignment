@@ -1,14 +1,21 @@
 import GatewayServicesPage from '../support/pages/gateway-services-page'
 
 describe('Create Gateway Service w historical data', () => {
-  //init test data
-    const gatewayServicesPage = new GatewayServicesPage();
-    const gatewayServiceNameHistoricalData = 'test1';
-    const gatewayServiceName = 'test2';
-    const gatewayServiceTag = 'tag1, tag2';
-    const gatewayServiceUrl = 'http://192.168.1.1';
+  const gatewayServicesPage = new GatewayServicesPage();
+  let testData;
 
     before(() => {
+      // Load and validate the fixture data
+      cy.fixture('create-gateway-service-w-data').then((data) => {
+        // Validate required fields
+        const requiredFields = ['historicalService', 'newService'];
+        requiredFields.forEach(field => {
+          expect(data).to.have.property(field);
+          expect(data[field]).to.have.all.keys(['name', 'tags', 'url', 'advancedFields']);
+        });
+        testData = data;
+      });
+      
       if (Cypress.env('START_DOCKER')) {
         cy.log('Starting env...')
         cy.startEnv();
@@ -21,11 +28,12 @@ describe('Create Gateway Service w historical data', () => {
       cy.clearTestData();
       cy.viewport(1920, 1080);
     });
+
     beforeEach(() => {
       cy.allure().step('create a new gateway as history data');
       gatewayServicesPage.visit();
       gatewayServicesPage
-      .createNewGatewayByFullUrl(gatewayServiceNameHistoricalData, gatewayServiceTag, gatewayServiceUrl, false)
+      .createNewGatewayByFullUrl(testData.historicalService.name, testData.historicalService.tags, testData.historicalService.url, false)
       .withViewAdvancedFields({
         retries: 3,
         timeout: 5000
@@ -36,9 +44,12 @@ describe('Create Gateway Service w historical data', () => {
     it('create service by full url with historical data', function () {
       cy.allure().step('create a new gateway by full url');
       gatewayServicesPage.visit();
-      cy.compareSnapshot('visit-gateway-service-page', 0.01);
+      cy.wait(1000);
+      gatewayServicesPage.cleanupMainPage();
+      // cy.compareSnapshot('visit-gateway-service-page', { testThreshold: 0 });
+
       gatewayServicesPage
-        .createNewGatewayByFullUrl(gatewayServiceName, gatewayServiceTag, gatewayServiceUrl, true)
+        .createNewGatewayByFullUrl(testData.newService.name, testData.newService.tags, testData.newService.url, true)
         .withViewAdvancedFields({
           retries: 3,
           timeout: 5000
@@ -46,6 +57,16 @@ describe('Create Gateway Service w historical data', () => {
           // certArray: [1001, 1002]
         })
         .save();
+      
+      gatewayServicesPage.visit();
+      gatewayServicesPage
+        .setFilter({"name": testData.newService.name});
+      gatewayServicesPage.clickItem(testData.newService.name);
+
+      gatewayServicesPage.cleanupDetailPage();
+      cy.compareSnapshot({
+        name: `gateway-detail-page-${testData.newService.name}`
+      });
     });
 
     afterEach(() => {

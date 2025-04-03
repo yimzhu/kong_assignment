@@ -1,15 +1,23 @@
 const { defineConfig } = require("cypress");
-const getCompareSnapshotsPlugin = require('cypress-image-diff-js/dist/plugin');
+const path = require('path');
+const getCompareSnapshotsPlugin = require('cypress-image-diff-js/plugin');
+const allureWriter = require("@shelex/cypress-allure-plugin/writer");
 
 // const allureWriter = require("@shelex/cypress-allure-plugin/writer");
 
 module.exports = defineConfig({
-  reporter: 'mochawesome',
+  reporter: 'cypress-multi-reporters',
   reporterOptions: {
-    reportDir: 'cypress/reports/mochawesome',
-    overwrite: false,
-    html: true,
-    json: true,
+    reporterEnabled: 'mochawesome, mocha-allure-reporter',
+    mochawesomeReporterOptions: {
+      reportDir: 'cypress/reports/mochawesome',
+      overwrite: false,
+      html: true,
+      json: true
+    },
+    mochaAllureReporterOptions: {
+      reportDir: 'allure-results'
+    }
   },
   e2e: {
     // baseUrl: "http://localhost:8002",
@@ -26,31 +34,37 @@ module.exports = defineConfig({
     defaultCommandTimeout: 10000,
     failOnStatusCode: false,
     chromeWebSecurity: false,
+    experimentalMemoryManagement: true,
+    numTestsKeptInMemory: 0,
+    video: false,
+    screenshotOnRunFailure: false,
+
+    garbageCollection: true,
     setupNodeEvents(on, config) {
-      // visualRegression(on, config, {
-      //   failureThreshold: 0,
-      //   screenshotPath: './cypress/screenshots'
-      // });
-      getCompareSnapshotsPlugin(on, config);
       on("task", {
         log(args) {
           console.log(...args);
           return null;
         }
       });
-      // allureWriter(on, config);  // 注册 Allure 插件
-      return config;
+      
+      on('after:spec', (spec, results) => {
+        if (global.gc) {
+          global.gc();
+        }
+      });
+      
+      // Configure Allure
+      allureWriter(on, config);
+      
+      // Configure image comparison
+      return getCompareSnapshotsPlugin(on, config);
     },
     env: {
       START_DOCKER: true,
       DEV_URL: "http://localhost:8002",
       DEV_API_URL: "http://localhost:8001",
-      "cypress-image-diff": {
-        "baseDir": "cypress/custom_snapshots/base",   // Baseline 存储路径
-        "diffDir": "cypress/custom_snapshots/diff",    // Diff 存储路径
-        "failureThreshold": 0.01, 
-        "failureThresholdType": "percent" // Use percentage (default: "pixel")
-      }
+      allure: true
     }
   },
 });

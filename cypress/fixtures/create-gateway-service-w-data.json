@@ -1,0 +1,20 @@
+{
+  "historicalService": {
+    "name": "test1",
+    "tags": "tag1, tag2",
+    "url": "http://192.168.1.1",
+    "advancedFields": {
+      "retries": 3,
+      "timeout": 5000
+    }
+  },
+  "newService": {
+    "name": "test2",
+    "tags": "tag1, tag2",
+    "url": "http://192.168.1.1",
+    "advancedFields": {
+      "retries": 3,
+      "timeout": 5000
+    }
+  }
+} 

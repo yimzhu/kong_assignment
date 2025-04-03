@@ -26,11 +26,7 @@
 
 import 'cypress-wait-until';
 import 'cypress-dotenv';
-import "cypress-image-diff-js/dist/command";
 
-// cypress/support/commands.js
-const compareSnapshotCommand = require('cypress-image-diff-js/dist/command');
-compareSnapshotCommand();
 const gatewayServiceUrl = (Cypress.env('DEV_API_URL') || 'http://localhost:8001')+'/default/services';
 const routeServiceUrl = (Cypress.env('DEV_API_URL') || 'http://localhost:8001')+'/default/routes';
 const queryParams = {
@@ -38,10 +34,74 @@ const queryParams = {
   size: 30,
 };
 
+const compareSnapshotCommand = require('cypress-image-diff-js');
+compareSnapshotCommand();
+
 //Safe get elements to avoid exception
 Cypress.Commands.add('safeGet', (selector) => {
   return cy.get('body').then(($body) => {
     return $body.find(selector).length > 0 ? cy.wrap($body.find(selector)) : null;
+  });
+});
+
+/**
+ * Safely remove an element from the DOM if it exists
+ * @param {string} selector - The CSS selector for the element to remove
+ * @param {Object} options - Options for the removal
+ * @param {number} options.timeout - Timeout in ms to wait for element
+ * @param {boolean} options.force - Force the removal even if element is not visible
+ */
+Cypress.Commands.add('safeRemove', (selector, options = {}) => {
+  const { timeout = 4000, force = false } = options;
+  
+  if (!selector) {
+    cy.log('Warning: Selector is undefined or empty');
+    return;
+  }
+
+  cy.get('body').then($body => {
+    // Check if element exists
+    if ($body.find(selector).length) {
+      cy.get(selector, { timeout })
+        .should('exist')
+        .then($el => {
+          // Try multiple methods to hide/remove the element
+          try {
+            // Method 1: Use jQuery remove
+            $el.remove();
+            
+            // Method 2: Use style.display = 'none'
+            if ($body.find(selector).length) {
+              $el.css('display', 'none');
+            }
+            
+            // Method 3: Use visibility = 'hidden'
+            if ($body.find(selector).length) {
+              $el.css('visibility', 'hidden');
+            }
+
+            // Method 4: Use opacity = 0
+            if ($body.find(selector).length) {
+              $el.css('opacity', '0');
+            }
+
+            // Method 5: Force remove using JavaScript
+            if (force && $body.find(selector).length) {
+              cy.window().then(win => {
+                const element = win.document.querySelector(selector);
+                if (element && element.parentNode) {
+                  element.parentNode.removeChild(element);
+                }
+              });
+            }
+          } catch (error) {
+            cy.log(`Warning: Could not remove element with selector "${selector}"`);
+            cy.log(error.message);
+          }
+        });
+    } else {
+      cy.log(`Element with selector "${selector}" not found`);
+    }
   });
 });
 

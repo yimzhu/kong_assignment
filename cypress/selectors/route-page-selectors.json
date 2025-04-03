@@ -1,0 +1,56 @@
+{
+  "addRoute":"div.k-alert button",
+
+  "routeName":"[data-testid='route-form-name']",
+  "routeTags":"[data-testid='route-form-tags']",
+  "protocolDropdown":{
+    "select":"[data-testid='route-form-protocols']",
+    "options":{
+      "grpc":"[data-testid='select-item-grpc'] span",
+      "grpcs":"[data-testid='select-item-grpcs'] span",
+      "grpcgrpcs":"[data-testid='select-item-grpc\\,grpcs'] span",
+      "http":"[data-testid='select-item-http'] span"
+    }
+  },
+  "path":"[data-testid='routing-rule-paths']",
+  "addPathFirst":"[data-testid='kui-icon-svg-add-icon']",
+  "addPathSecond":"div.routing-rule-container > div:nth-of-type(2) [data-testid='kui-icon-svg-add-icon']",
+  "addPathThirdHalfOne":"div:nth-of-type(",
+  "addPathThirdHalfTwo": ") [data-testid='kui-icon-svg-add-icon']",
+  "pathsPrefix":"[data-testid='route-form-paths-input-'",
+
+  "host":"[data-testid='routing-rule-hosts']",
+  "addHostFirst":"div.card-content > div:nth-of-type(2) [data-testid='kui-icon-svg-add-icon']",
+  "addHostSecond":"div.card-content > div:nth-of-type(2) > div:nth-of-type(2) [data-testid='kui-icon-svg-add-icon']",
+  "addHostThirdHalfOne":"div:nth-of-type(",
+  "addHostThirdHalfTwo":") [data-testid='kui-icon-svg-add-icon']",
+  "hostsPrefix":"[data-testid='route-form-hosts-input-'",
+
+  "method":"[data-testid='routing-rule-methods']",
+  "methodsOptions":{
+    "head":"div:nth-of-type(7) [data-testid='switch-control']"
+  },
+  "pathHandling":{
+    "select":"[data-testid='route-form-path-handling']",
+    "options":{
+      "v0":"[data-testid='select-item-v0'] span",
+      "v1":"[data-testid='select-item-v1'] span"
+    }
+  },
+  "httpsRedirectStatusCode":{
+    "select":"[data-testid='route-form-http-redirect-status-code']",
+    "options":{
+      "308":"[data-testid='select-item-308'] span",
+      "426":"[data-testid='select-item-426'] span",
+      "302":"[data-testid='select-item-302'] span",
+      "307":"[data-testid='select-item-307'] span",
+      "301":"[data-testid='select-item-301'] span"
+    }
+  },
+  "regexPriority":"[data-testid='route-form-regex-priority']",
+  "isPreserveHost":"[data-testid='route-form-preserve-host']",
+  "requestBuffering":"[data-testid='route-form-request-buffering']",
+  "responseBuffering":"[data-testid='route-form-response-buffering']",
+  "save":"[data-testid='route-create-form-submit']",
+  "cancel":"[data-testid='route-create-form-cancel']"
+}

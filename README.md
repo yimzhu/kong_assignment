@@ -19,35 +19,6 @@ Demo automation test cases for Kong manager
 
 ## Project Structure ✨
 
-├── cypress <br>
-│   ├── downloads<br>
-│   ├── e2e                                     # end to end test scenarios<br>
-│   │   ├── createGatewayServiceWData.cy.js<br>
-│   │   └── createGatewayServiceWoData.cy.js<br>
-│   ├── fixtures<br>
-│   │   └── example.json<br>
-│   ├── integration<br>
-│   │   ├── api<br>
-│   │   └── utils	                             #utils for drivers or test lib<br>
-│   ├── reports<br>
-│   │   ├── allure-reports<br>
-│   │   └── allure-results<br>
-│   ├── screenshots<br>
-│   ├── selectors<br>
-│   │   └── dropdowns.json<br>
-│   ├── support<br>
-│   │   ├── commands.js<br>
-│   │   ├── e2e.js<br>
-│   │   └── pages	                              #page objects<br>
-│   │         └── gatewayServicesDetailPage.js<br>
-│   │         └── gatewayServicesDetailRoutePage.js<br>
-│   │         └── gatewayServicesPage.js<br>
-│   └── videos<br>
-├── cypress.config.js<br>
-├── docker-compose.yml<br>
-├── package-lock.json<br>
-└── package.json<br>
-
 ---
 
 ## Installation 🛠️
@@ -63,7 +34,7 @@ Demo automation test cases for Kong manager
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/project-name.git
+   git clone https://github.com/yimzhu/kong_assignment.git
    cd project-name
    ```
 
@@ -104,14 +75,8 @@ Demo automation test cases for Kong manager
 - Common functions are defined under Cypress commands to keep test cases concise.
 
 ### **Trade-Offs**
-- The reporting feature is relatively simple. Allure provides more powerful reporting and easier configuration in TypeScript, but it is more complex in JavaScript. Therefore, Mochawesome was chosen as a compromise.
-- Some page operation methods can be further abstracted. For example, when adding a route based on a specific gateway, the gateway can be passed as a parameter, and scenarios can be distinguished using different methods. This requires further refinement of user behavior.
-- UI elements should be extracted into a JSON file for centralized maintenance.
 - A data-driven approach should be used for input values to cover more scenarios.
 - The current test coverage for positive gateway service scenarios is insufficient; more granular coverage is needed for edge cases and negative scenarios.
-- Parallel execution is not enabled by default, prioritizing stability over speed.
-- baseURL is supposed to be defined as varaibles in (process.env), so that it can adapt to different environment
-- Some operation like click() has implicit assertions, and we can do far more than that, comparing screenshots or API data in Cypress can improve test accuracy and catch more UI or data discrepancies. But it needs more time. 
 
 ### **E2E Scenarios**
 Scenario 1:<br>

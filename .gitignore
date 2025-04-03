@@ -8,3 +8,12 @@ node_modules/
 cypress/reports/
 cypress/screenshots/
 cypress/videos/
+cypress/snapshots/comparison/
+cypress/snapshots/diff/
+cypress/cypress-image-diff-html-report/
+
+# ignore allure results 
+allure-results/
+allure-report/
+allure-report-data/
+

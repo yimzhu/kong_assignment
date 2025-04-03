@@ -1,27 +1,24 @@
-import dropdownSelectors from '../../selectors/dropdowns.json';
-import gatewayServicesPageSelectors from '../../selectors/gateway-service-page-selectors.json';
+import gatewaySelectors from '../../selectors/gateway-service-page-selectors.json';
 import 'cypress-dotenv';
 
 class GatewayServicePage {
-    constructor() {
-        // this.viewAdvancedFields = { /* 默认值 */ };
-        // // 标记必填项是否已填写的状态
-        // this.requiredFieldsFilled = false; 
-    }
     /**
      * Navigate to gateway service page
      * @returns 
      */
     visit() {
       cy.log("Navigate to: "+Cypress.env('DEV_URL')+"/default/services");
-      cy.visit(Cypress.env('DEV_URL')+"/default/services");
-      // Wait for the page fully loaded
-      cy.window().should('have.property', 'document');
-      // Hide the element to exclude it from the snapshot
-      cy.get("header span > span").invoke("css", "visibility", "hidden");
-      cy.get("footer > a").invoke("css", "visibility", "hidden");
-      cy.get("div.navbar-content-right > a path").invoke("css", "visibility", "hidden");
-      cy.get("div.popover-trigger-wrapper a").invoke("css", "visibility", "hidden");
+      cy.visit(Cypress.env('DEV_URL')+"/default/services", {
+        onBeforeLoad: (win) => {
+          // Disable animations
+          win.sessionStorage.setItem('cypress-animation-disabled', 'true');
+        }
+      });
+      
+      // Wait efficiently
+      cy.get('body').should('be.visible');
+      
+      // Hide elements more efficiently
       return this;
     }
 
@@ -33,53 +30,111 @@ class GatewayServicePage {
     * @param {boolean} dataExists if gateway service data exists
     */
     createNewGatewayByFullUrl(name, tags, url, dataExists) {
-      if(dataExists==true){
-        cy.log('click add gateway service button')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.addGatewayButton).should('exist').click();
-      }else if(dataExists==false){
-        cy.log('click add gateway service button')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.addGatewayButtonAtEmptyAction).should('exist').click();
-      }else{
-        throw new Error('dataExists parameter is missing')
+      if (typeof dataExists !== 'boolean') {
+        throw new Error('dataExists parameter is missing or not a boolean')
       }
-        cy.log('input gateway service name')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceName).clear().should('not.have.value', 'oldvalue').type(name);
-        cy.log('input gateway service tags')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceTags).clear().should('not.have.value', 'oldvalue').type(tags);
-        cy.log('click gateway service url radio button')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceUrlRadioBtn).click();
-        cy.log('input gateway service url')
-        cy.get(gatewayServicesPageSelectors.gatewayServicePage.gatewayServiceUrlInput).clear().should('not.have.value', 'oldvalue').type(url, { delay: 100 });
-        return this;
+
+      // Add gateway btn is different if data exists
+      cy.log('Click add gateway service button');
+      const addButtonSelector = dataExists 
+        ? gatewaySelectors.addGatewayBtn 
+        : gatewaySelectors.addGatewayBtnAtEmptyAction;
+
+      cy.get(addButtonSelector).should('exist').click();
+    
+      // choose url method
+      cy.get("[data-testid='gateway-service-url-radio']").click();
+    
+      // input
+      const inputFields = [
+        { selector: gatewaySelectors.gatewayName, value: name, log: 'name' },
+        { selector: gatewaySelectors.gatewayTags, value: tags, log: 'tags' },
+        { selector: gatewaySelectors.gatewayUrlInput, value: url, log: 'URL', options: { delay: 100 } }
+      ];
+    
+      inputFields.forEach(({ selector, value, log, options }) => {
+        cy.log(`Input gateway service ${log}`);
+        cy.get(selector).clear().type(value, options);
+      });
+    
+      return this;
     }
     
     /**
-     * New Gateway Service - Full URL fields
+     * New Gateway Service - Protocol fields
      * @param {*} protocol 
      * @param {*} host 
      * @param {*} path 
      * @param {*} port 
      * @returns 
      */
-    createNewGatewayByProtocol(protocol, host, path, port){
-        cy.get("[data-testid='toolbar-add-gateway-service']").click();
-        cy.get("[data-testid='gateway-service-protocol-radio']").click();
+    createNewGatewayByProtocol(name, tags, protocol, host, dataExists, options={}){
+      if (typeof dataExists !== 'boolean') {
+        throw new Error('dataExists parameter is missing or not a boolean')
+      }
+      
+      // choose which Add Gateway Service Button to use
+      cy.log('Click add gateway service button');
+      const addButtonSelector = dataExists 
+        ? gatewaySelectors.addGatewayBtn 
+        : gatewaySelectors.addGatewayBtnAtEmptyAction;
 
-        //select a protocol
-        // cy.get(dropdownSelectors.protocolDropdown.container).click();
-        cy.get("[data-testid='gateway-service-protocol-select']").should("be.visible").click();
-        cy.get(`[data-testid='select-item-${protocol}'] span`).should("be.visible").click();
-        cy.get("[data-testid='gateway-service-host-input']").should('not.have.value', 'oldvalue').type(host);
-        cy.get("[data-testid='gateway-service-path-input']").should('not.have.value', 'oldvalue').type(path);
-        cy.get("[data-testid='gateway-service-port-input']").should('not.have.value', 'oldvalue').type(port);
-        return this;
+      cy.get(addButtonSelector).should('exist').click();
+
+      // common input fields
+      const inputFields = [
+        { selector: gatewaySelectors.gatewayName, value: name, log: 'name' },
+        { selector: gatewaySelectors.gatewayTags, value: tags, log: 'tags' },
+      ];
+      
+      inputFields.forEach(({ selector, value, log, options }) => {
+        cy.log(`Input gateway service ${log}`);
+        cy.get(selector).clear().type(value, options);
+      });
+
+      // protocol selection
+      cy.get(gatewaySelectors.protocolRadioBtn).click();
+      cy.get(gatewaySelectors.protocolDropdown.select).should("be.visible").click();
+
+      const SUPPORTED_PROTOCOLS = ['grpc', 'grpcs', 'http', 'https', 'tcp', 'tls', 'tls_passthrough', 'udp', 'ws', 'wss'];
+      const normalizedProtocol = protocol?.toLowerCase();
+      if (!SUPPORTED_PROTOCOLS.includes(normalizedProtocol)) {
+        throw new Error(`Unsupported protocol: ${protocol}. Valid values: ${SUPPORTED_PROTOCOLS.join(', ')}`);
+      }
+      cy.get(gatewaySelectors.protocolDropdown.options[normalizedProtocol]).click();
+    
+      // handle optioanl fields
+      const handleOptionalField = (field, selector) => {
+        if (options?.[field] != null) {
+          cy.get(selector)
+            .should('not.have.value', 'oldvalue')
+            .type(options[field]);
+        }
+      };
+    
+      // port logic
+      if (['http', 'https', 'grpc', 'grpcs', 'tcp', 'udp', 'tls'].includes(normalizedProtocol)) {
+        handleOptionalField('port', gatewaySelectors.protocolPort);
+      }
+    
+      // path logic
+      if (['http', 'https', 'ws', 'wss'].includes(normalizedProtocol)) {
+        handleOptionalField('path', gatewaySelectors.protocolPath);
+      }
+
+      // host（mandatory field）
+      cy.get(gatewaySelectors.protocolHost)
+      .should('not.have.value', 'oldvalue')
+      .type(host);
+
+      return this;
     }
 
     /**
     * New Gateway Service - View Advanced Fields
     * @param {{
     *  retries?: number,
-    *  timeout?: number,
+    *  connTimeout?: number,
     *  writeTimeout?: number,
     *  readTimeout?: number,
     *  clientCertId?: number,
@@ -88,96 +143,179 @@ class GatewayServicePage {
     * }} options 
     */
     withViewAdvancedFields(options = {}) {
-      const {  
-        certArray = [],    
-        clientCertId,      
-        retries = 5,        
-        timeout = 60000,
-        writeTimeout = 60000,
-        readTimeout = 60000,
-        TLS
-      } = options
-        // Expand Advanced Area
-        cy.get("[data-testid='collapse-trigger-label']").click();
+      // Expand advanced fields
+      cy.get("[data-testid='collapse-trigger-label']").click();
     
-        // Only for the value exists
-        if (options.retries !== undefined) {
-          cy.get("[data-testid='gateway-service-retries-input']")
-            .should("be.visible")
-            .clear()
-            .type(options.retries);
+      // Dynamically handle each optional field（only operate when passed）
+      const optionalFields = [
+        { key: 'retries', selector: gatewaySelectors.retries, visible: true },
+        { key: 'connTimeout', selector: gatewaySelectors.connTimeout, visible: true },
+        { key: 'writeTimeout', selector: gatewaySelectors.writeTimeout, visible: true },
+        { key: 'readTimeout', selector: gatewaySelectors.readTimeout, visible: true  },
+        { key: 'clientCertId', selector: gatewaySelectors.clientCertId, visible: true  }
+      ];
+    
+      optionalFields.forEach(({ key, selector, visible }) => {
+        if (options[key] !== undefined) {
+          const chain = cy.get(selector);
+          if (visible) chain.should("be.visible");
+          chain.clear().type(options[key]);
         }
-        if (options.timeout !== undefined) {
-          cy.get("[data-testid='gateway-service-connTimeout-input']")
-            .should("be.visible")
-            .clear()
-            .type(options.timeout);
-        }
-        if (options.writeTimeout !== undefined) {
-            cy.get("[data-testid='gateway-service-writeTimeout-input']")
-              .clear()
-              .type(options.writeTimeout);
-        }
-        if (options.readTimeout !== undefined) {
-            cy.get("[data-testid='gateway-service-readTimeout-input']")
-              .clear()
-              .type(options.readTimeout);
-        }
-        if (options.clientCertId !== undefined) {
-            cy.get("[data-testid='gateway-service-clientCert-input']")
-              .clear()
-              .type(options.clientCertId);
-        }
-        if (options.certArray?.length !== undefined) {
-
-          // console.log(options.certArray)
-            let caCertIds = options.certArray.join(',')
-            
-            // for (let caCertId of options.certArray){
-            //     caCertIds += caCertId
-            // }
-            cy.get("[data-testid='gateway-service-ca-certs-input']")
-              .should("be.visible")
-              .clear()
-              .type(caCertIds);
-          }
-        
-        if (options.TLS !== undefined) {
-            const selector = options.TLS 
-                ? "[data-testid='gateway-service-tls-verify-true-option']" 
-                : "[data-testid='gateway-service-tls-verify-false-option']";
-            cy.get(selector).click();
-        }
-        return this;
+      });
+    
+      // Handle certArray（explicitly pass in an array and the length > 0）
+      if (Array.isArray(options.certArray) && options.certArray.length > 0) {
+        cy.get(gatewaySelectors.certArray)
+          .should("be.visible")
+          .clear()
+          .type(options.certArray.join(','));
       }
-
-      /**
+    
+      // Handle TLS
+      if (typeof options.TLS === 'boolean') {
+        const selector = options.TLS
+          ? gatewaySelectors.tlsTrue
+          : gatewaySelectors.tlsFalse;
+        cy.get(selector).click();
+      }
+    
+      return this;
+    }
+    
+    /**
        * enter specific gateway
        * @param {*} name 
        */
-      filter(name){
-        //if gateway exists 
-        cy.get("[data-testid='filter-button']").click();
-        cy.get("[data-testid='name'] > span").click();
-        cy.get("#filter-name").click();
-        cy.get("#filter-name").type(name);
-        cy.get("[data-testid='name'] [data-testid='apply-filter']").click();
-        cy.get("section > div > div > div > div > div:nth-of-type(2) [data-testid='name']").click();
+    setFilter(options = {}) {
+      if (typeof options !== "object" || options === null) {
+        throw new Error("Params must be object!");
       }
+      if (Object.entries(options).length === 0) {
+        throw new Error("Options should NOT be empty");
+      }
+    
+      cy.get(gatewaySelectors.filterBtn).click();
+    
+      const optionMap = {
+        name: () => {
+          cy.get(gatewaySelectors.expandName).click();
+          cy.get(gatewaySelectors.filterName).type(options.name);
+          cy.get(gatewaySelectors.applyName).click();
+        },
+        enabled: () => {
+          cy.get(gatewaySelectors.expandEnabled).click();
+          cy.get(gatewaySelectors.filterEnabled).click();
+          cy.get(gatewaySelectors.filterEnabled.options[options.enabled ? 'true' : 'false']).click();
+          cy.get(gatewaySelectors.applyEnabled).click();
+        },
+        protocol: () => { /* TODO */ },
+        host: () => { /* TODO */ },
+        port: () => { /* TODO */ },
+        path: () => { /* TODO */ }
+      };
+    
+      // Iterate `options` and call the specific operations
+      Object.keys(options).forEach(key => {
+        if (optionMap[key]) optionMap[key]();
+      });
+      return this;
+    }
 
-      /**
-       * New Gateway Service - Save
+    /**
+     * Click on an item
+     * @param {string} name 
+     */
+    clickItem(name){
+      //TODO: if there is two more items here
+      cy.get(`${gatewaySelectors.clickOneItem}${name}']`).click(); 
+      return this;
+    }
+    
+    /**
+       * Clear specific options
+       * @param {*} options 
        */
-      save(){
-        cy.get("[data-testid='service-create-form-submit']").click();
-      }
+    clearFilter(options = {}) {
+      // Do validation on parameters
+      const validateOptions = (options) => {
+        if (typeof options !== "object" || options === null) {
+          throw new Error("Params must be an object!");
+        }
+        if (Object.keys(options).length === 0) {
+          throw new Error("Options cannot be empty!");
+        }
+      };
+    
+      // Gather all elements according to the UI
+      const FIELD_ACTIONS = {
+        name: {
+          expand: gatewaySelectors.expandName,
+          clear: gatewaySelectors.clearName,
+        },
+        enabled: {
+          expand: gatewaySelectors.expandEnabled,
+          clear: gatewaySelectors.clearEnabled,
+        },
+        // TODO: all other options（like protocol/host/port etc）
+      };
+    
+      // Validate parameters
+      validateOptions(options); 
+      // Open filter panel
+      cy.get(gatewaySelectors.filterBtn).click(); 
+    
+      // Do clear according to options
+      Object.entries(options).forEach(([field, value]) => {
+        if (value != null && FIELD_ACTIONS[field]) {
+          const { expand, clear } = FIELD_ACTIONS[field];
+          cy.get(expand).click();
+          cy.get(clear).click();
+        }
+      });
+    }
 
-      /**
-       * New Gateway Service - Cancel
-       */
-      cancel(){
-        cy.get("[data-testid='service-create-form-cancel']").click();
-      }
+    /**
+     * New Gateway Service -> Click Filter -> Clear all filters
+     */
+    clearAllFilters(){
+      cy.get(gatewaySelectors.filterBtn).click()
+      cy.get(gatewaySelectors.clearAllFilters).click();
+    }
+
+    /**
+     * New Gateway Service -> Save
+     */
+    save(){
+      cy.get(gatewaySelectors.save).click();
+    }
+
+    /**
+     * New Gateway Service -> Cancel
+     */
+    cancel(){
+      cy.get(gatewaySelectors.cancel).click();
+    }
+
+    // Add efficient cleanup method
+    cleanupMainPage() {
+      cy.window().should('have.property', 'document');
+      cy.wait(1000);
+      cy.get(gatewaySelectors.headerSpan).invoke('remove');
+      cy.get("[data-testid='dropdown-trigger']").ç;
+
+      // cy.get(gatewaySelectors.footer).invoke('remove');
+      cy.get(gatewaySelectors.navbar).invoke('remove');
+      cy.get(gatewaySelectors.popover).invoke('remove');
+
+      return this;
+    }
+
+    cleanupDetailPage(){
+      cy.window().should('have.property', 'document');
+      cy.wait(1000);
+      cy.get(gatewaySelectors.lastUpdated).invoke('remove');
+      cy.get(gatewaySelectors.copyText).invoke('remove');
+    }
   }
   
   export default GatewayServicePage;
